@@ -11,10 +11,10 @@ steps:
   entrypoint: 'pack' # Explicitly call the 'pack' command
   args: [
     'build',
-    'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/read-databricks-function:${_SHORT_SHA}',
+    'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
     '--builder', 'europe-west1-docker.pkg.dev/serverless-runtimes/google-22-full/builder/python:python_20250914_RC00', # Specify the Google Python builder
     '--env', 'GOOGLE_RUNTIME_VERSION=3.13.7', # Specify your desired Python version
-    '--env', 'GOOGLE_FUNCTION_TARGET=enhanced_description', # Your function entry point
+    '--env', 'GOOGLE_FUNCTION_TARGET=enrich_description', # Your function entry point
     '--path', './workspace' # Build from the current directory
   ]
   id: 'Build Image with Pack CLI'
