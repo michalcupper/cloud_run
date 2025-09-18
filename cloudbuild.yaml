@@ -29,7 +29,7 @@ steps:
       '--no-allow-unauthenticated',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
       # Optional: set runtime environment variables:
-      # '--set-env-vars=VAR_NAME=value'
+      # '--set-env-vars=VAR_NAME=value'.
     ]
   id: 'Deploy to Cloud Run'
 
