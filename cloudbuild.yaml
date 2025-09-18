@@ -1,40 +1,4 @@
 # cloudbuild.yaml
-steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_GIT_TAG}', '.']
-  id: Build
-  env:
-  - 'GOOGLE_RUNTIME_VERSION=3.13.7'
-  - 'GOOGLE_FUNCTION_TARGET=enhanced_description'
-  # Add any other environment variables needed for the build (not runtime)
-  # - 'SOME_BUILD_VAR=value'
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_GIT_TAG}']
-  id: Push
-
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args:
-  - 'run'
-  - 'deploy'
-  - 'enhanced_description-function' # Name of your Cloud Run service
-  - '--image'
-  - 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_GIT_TAG}'
-  - '--region'
-  - 'europe-west1'
-  - '--platform'
-  - 'managed'
-  - '--no-allow-unauthenticated'
-  - '--service-account'
-  - 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com' # Your runtime SA
-  # Add any environment variables your Cloud Run service needs at runtime
-  # - '--set-env-vars=DATABRICKS_HOST=https://your-databricks-instance.cloud.databricks.com'
-  # For sensitive data, use Secret Manager and mount it as a volume or env var
-  # - '--set-secrets=DATABRICKS_TOKEN=DATABRICKS_TOKEN:latest'
-  id: Deploy
-
-# cloudbuild.yaml
 # This file instructs Cloud Build to build your Python application
 # into a container image and then deploy it to Cloud Run.
 
@@ -46,7 +10,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'build',
-    '-t', 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
+    '-t', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
     '.'
   ]
   env:
@@ -60,7 +24,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [
     'push',
-    'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}'
+    'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}'
   ]
   id: 'Push to Artifact Registry'
 
@@ -75,7 +39,7 @@ steps:
   - 'deploy'
   - 'enhanced_description' # The name of your Cloud Run service
   - '--image'
-  - 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}'
+  - 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}'
   - '--region'
   - 'europe-west1'
   - '--platform'
