@@ -2,7 +2,7 @@
 # Builds a Python Cloud Function with Buildpacks and deploys to Cloud Run
 
 steps:
-# Step 1: Build and push the Docker image using Buildpacks
+# Step 0: Build and push the Docker image using Buildpacks
 - name: 'gcr.io/buildpacks/pack:latest'
   entrypoint: 'pack'
   args:
@@ -13,11 +13,11 @@ steps:
       '--env', 'GOOGLE_RUNTIME_VERSION=3.13.7',
       '--env', 'GOOGLE_FUNCTION_TARGET=enrich_description',
       '--path', './workspace',
-      '--publish'  # <-- Automatically pushes to Artifact Registry
+      '--publish'  # <-- Buildpacks builds and pushes directly
     ]
   id: 'Build and Push Image with Buildpacks'
 
-# Step 2: Deploy the new image to Cloud Run
+# Step 1: Deploy the image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
@@ -28,13 +28,13 @@ steps:
       '--platform', 'managed',
       '--no-allow-unauthenticated',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
-      # Optional: Set runtime environment variables here
+      # Optional runtime environment variables:
       # '--set-env-vars=DATABRICKS_HOST=https://your-databricks-instance.cloud.databricks.com'
     ]
   id: 'Deploy to Cloud Run'
 
-# Substitutions
+# Substitutions (optional)
 substitutions:
-  _SHORT_SHA: 'latest'  # Replace with Git SHA if desired
+  _SHORT_SHA: 'latest'  # Replace with actual Git SHA if you want versioned builds
 
 timeout: 1200s
