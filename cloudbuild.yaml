@@ -1,0 +1,21 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$dev-michal-cupper/test2', '.']
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/test2']
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'test2' # Replace with your Cloud Run service name
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/your-service-name'
+      - '--region'
+      - 'europe-west1' # Replace with your desired region
+      - '--platform'
+      - 'managed'
+      - '--no-allow-unauthenticated' # Or --no-allow-unauthenticated if authenticated access is desired
