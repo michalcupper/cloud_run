@@ -7,7 +7,8 @@ steps:
 # Cloud Build will automatically use Buildpacks because no Dockerfile is specified
 # and it detects a Python project with main.py and requirements.txt.
 # We pass --env arguments to guide Buildpacks for Cloud Run Function setup.
-- name: 'gcr.io/cloud-builders/buildpack'
+- name: 'gcr.io/buildpacks/pack:latest' # Use a builder image that has the 'pack' CLI
+  entrypoint: 'pack' # Explicitly call the 'pack' command
   args: [
     'build',
     '-t', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
