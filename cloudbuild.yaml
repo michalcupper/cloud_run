@@ -1,40 +1,40 @@
 # cloudbuild.yaml
-# Builds a Python Cloud Function with Buildpacks and deploys to Cloud Run
+# Build and deploy Python Cloud Function to Cloud Run using Buildpacks
 
 steps:
-# Step 0: Build and push the Docker image using Buildpacks
+# Step 0: Build and push Docker image with Buildpacks
 - name: 'gcr.io/buildpacks/pack:latest'
   entrypoint: 'pack'
   args:
     [
       'build',
-      'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
+      'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${SHORT_SHA}',
       '--builder', 'europe-west1-docker.pkg.dev/serverless-runtimes/google-22-full/builder/python:python_20250914_RC00',
       '--env', 'GOOGLE_RUNTIME_VERSION=3.13.7',
       '--env', 'GOOGLE_FUNCTION_TARGET=enrich_description',
       '--path', './workspace',
-      '--publish'  # <-- Buildpacks builds and pushes directly
+      '--publish'
     ]
   id: 'Build and Push Image with Buildpacks'
 
-# Step 1: Deploy the image to Cloud Run
+# Step 1: Deploy to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
     [
       'run', 'deploy', 'enhanced_description',
-      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
+      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${SHORT_SHA}',
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
-      # Optional runtime environment variables:
-      # '--set-env-vars=DATABRICKS_HOST=https://your-databricks-instance.cloud.databricks.com'
+      # Optional: set runtime environment variables:
+      # '--set-env-vars=VAR_NAME=value'
     ]
   id: 'Deploy to Cloud Run'
 
-# Substitutions (optional)
+# Substitutions
 substitutions:
-  _SHORT_SHA: 'latest'  # Replace with actual Git SHA if you want versioned builds
+  SHORT_SHA: '${SHORT_SHA}'  # Cloud Build automatically sets this to first 7 chars of Git commit SHA
 
 timeout: 1200s
