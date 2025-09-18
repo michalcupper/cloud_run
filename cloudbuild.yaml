@@ -1,8 +1,4 @@
-# cloudbuild.yaml
-# Build and deploy Python Cloud Function to Cloud Run using Buildpacks
-
 steps:
-# Step 0: Build and push Docker image with Buildpacks
 - name: 'gcr.io/buildpacks/pack:latest'
   entrypoint: 'pack'
   args:
@@ -17,7 +13,6 @@ steps:
     ]
   id: 'Build and Push Image with Buildpacks'
 
-# Step 1: Deploy to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
   args:
@@ -28,13 +23,13 @@ steps:
       '--platform', 'managed',
       '--no-allow-unauthenticated',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
-      # Optional: set runtime environment variables:
-      # '--set-env-vars=VAR_NAME=value'
     ]
   id: 'Deploy to Cloud Run'
 
-# Substitutions
 substitutions:
-  SHORT_SHA: '${SHORT_SHA}'  # Cloud Build automatically sets this to first 7 chars of Git commit SHA
+  SHORT_SHA: '${SHORT_SHA}'
 
 timeout: 1200s
+
+options:
+  logging: CLOUD_LOGGING_ONLY
