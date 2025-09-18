@@ -1,21 +1,103 @@
+# cloudbuild.yaml
 steps:
-  # Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$dev-michal-cupper/test2', '.']
-  # Push the container image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/test2']
-  # Deploy to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - 'test2' # Replace with your Cloud Run service name
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/your-service-name'
-      - '--region'
-      - 'europe-west1' # Replace with your desired region
-      - '--platform'
-      - 'managed'
-      - '--no-allow-unauthenticated' # Or --no-allow-unauthenticated if authenticated access is desired
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_GIT_TAG}', '.']
+  id: Build
+  env:
+  - 'GOOGLE_RUNTIME_VERSION=3.13.7'
+  - 'GOOGLE_FUNCTION_TARGET=enhanced_description'
+  # Add any other environment variables needed for the build (not runtime)
+  # - 'SOME_BUILD_VAR=value'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_GIT_TAG}']
+  id: Push
+
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'enhanced_description-function' # Name of your Cloud Run service
+  - '--image'
+  - 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${_GIT_TAG}'
+  - '--region'
+  - 'europe-west1'
+  - '--platform'
+  - 'managed'
+  - '--no-allow-unauthenticated'
+  - '--service-account'
+  - 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com' # Your runtime SA
+  # Add any environment variables your Cloud Run service needs at runtime
+  # - '--set-env-vars=DATABRICKS_HOST=https://your-databricks-instance.cloud.databricks.com'
+  # For sensitive data, use Secret Manager and mount it as a volume or env var
+  # - '--set-secrets=DATABRICKS_TOKEN=DATABRICKS_TOKEN:latest'
+  id: Deploy
+
+# cloudbuild.yaml
+# This file instructs Cloud Build to build your Python application
+# into a container image and then deploy it to Cloud Run.
+
+steps:
+# Step 1: Build the Docker image using Cloud Build's Docker builder.
+# Cloud Build will automatically use Buildpacks because no Dockerfile is specified
+# and it detects a Python project with main.py and requirements.txt.
+# We pass --env arguments to guide Buildpacks for Cloud Run Function setup.
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}',
+    '.'
+  ]
+  env:
+  - 'GOOGLE_RUNTIME_VERSION=3.13.7' # Specify your desired Python version
+  - 'GOOGLE_FUNCTION_TARGET=enhanced_description' # Your function entry point
+  id: 'Build Image'
+
+# Step 2: Push the built Docker image to Artifact Registry.
+# The image built in the previous step is now pushed to the specified
+# Artifact Registry repository.
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'push',
+    'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}'
+  ]
+  id: 'Push to Artifact Registry'
+
+# Step 3: Deploy the new image to Cloud Run.
+# This step uses the gcloud SDK to deploy the service.
+# It specifies the image from Artifact Registry, the region,
+# and crucially, the service account the Cloud Run service will use at runtime.
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'deploy'
+  - 'enhanced_description' # The name of your Cloud Run service
+  - '--image'
+  - 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/enhanced_description-function:${_SHORT_SHA}'
+  - '--region'
+  - 'europe-west1'
+  - '--platform'
+  - 'managed'
+  - '--no-allow-unauthenticated' # Set to '--no-allow-unauthenticated' if you want private access
+  - '--service-account'
+  - 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com' # Your Cloud Run runtime SA
+  # --- Optional: Environment variables for your Cloud Run service ---
+  # These are runtime environment variables, distinct from build-time ones.
+  # For sensitive data, consider using Secret Manager volumes/references in Cloud Run.
+  # - '--set-env-vars=DATABRICKS_HOST=https://your-databricks-instance.cloud.databricks.com'
+  # - '--set-env-vars=ANOTHER_VAR=another_value'
+  # ---
+  id: 'Deploy to Cloud Run'
+
+# Substitutions (Optional, but useful for build tags)
+# _SHORT_SHA is a built-in Cloud Build substitution that provides
+# the first 7 characters of the Git commit SHA.
+# You could also use a custom substitution for a version number if preferred.
+substitutions:
+  _SHORT_SHA: 'latest' # Default to 'latest' or use actual commit SHA
+  # You can define more custom substitutions here if needed,
+  # and reference them as ${_YOUR_VAR} in the steps above.
+
+timeout: 1200s # Increase timeout if builds or deployments are long (e.g., 20 minutes)
