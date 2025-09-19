@@ -17,8 +17,8 @@ steps:
   entrypoint: gcloud
   args:
     [
-      'run', 'deploy', 'enhanced_description',
-      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${SHORT_SHA}',
+      'run', 'deploy', 'enhanced-description',
+      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
