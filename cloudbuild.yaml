@@ -19,17 +19,14 @@ steps:
   args:
     [
       'functions', 'deploy', 'enhanced-description',
-      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
+      '--gen2',
       '--region', 'europe-west1',
-      '--platform', 'managed',
-      '--no-allow-unauthenticated',
-      '--set-env-vars', 'FUNCTION_TARGET=enrich_description,FUNCTION_SIGNATURE_TYPE=http',
-      '--set-env-vars', 'GOOGLE_RUNTIME_VERSION=3.13.7',
+      '--trigger-http',
+      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
+      '--set-env-vars', 'FUNCTION_TARGET=enrich_description,FUNCTION_SIGNATURE_TYPE=http,GOOGLE_RUNTIME_VERSION=3.13.7',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
       '--memory', '512Mi',
-      '--max-instances', '1',
-      '--trigger-http',
-      '--gen2'
+      '--max-instances', '1'
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
