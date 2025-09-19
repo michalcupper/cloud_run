@@ -31,5 +31,7 @@ substitutions:
 
 timeout: 1200s
 
+serviceAccount: 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
+
 options:
-  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+  logging: CLOUD_LOGGING_ONLY
