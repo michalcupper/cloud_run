@@ -22,7 +22,7 @@ steps:
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
-      '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
+      '--service-account', 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
     ]
   id: 'Deploy to Cloud Run'
 
@@ -33,5 +33,7 @@ timeout: 1200s
 
 serviceAccount: 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
 
+logsBucket: 'gs://enriched_description'
+
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: GCS_ONLY
