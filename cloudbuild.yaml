@@ -18,15 +18,16 @@ steps:
   entrypoint: gcloud
   args:
     [
-      'functions', 'deploy', 'enhanced-description',
-      '--gen2',
-      '--region', 'europe-west1',
-      '--trigger-http',
-      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
-      '--set-env-vars', 'FUNCTION_TARGET=enrich_description,FUNCTION_SIGNATURE_TYPE=http,GOOGLE_RUNTIME_VERSION=3.13.7',
-      '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
-      '--memory', '512Mi',
-      '--max-instances', '1'
+    'functions', 'deploy', 'enhanced_description',
+          '--region', 'europe-west1',
+          '--gen2',
+          '--runtime', 'python313',
+          '--memory', '512Mi',
+          '--max-instances', '1',
+          '--trigger-http',
+          '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
+          '--image',
+          'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}'
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
