@@ -26,7 +26,10 @@ steps:
       '--set-env-vars', 'FUNCTION_TARGET=enrich_description,FUNCTION_SIGNATURE_TYPE=http',
       '--set-env-vars', 'GOOGLE_RUNTIME_VERSION=3.13.7',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
-      '--memory', '256Mi'
+      '--memory', '512Mi',
+      '--max-instances', '1',
+      '--trigger-http',
+      '--gen2'
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
