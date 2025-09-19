@@ -1,5 +1,5 @@
 steps:
-- name: 'gcr.io/buildpacks/pack:latest'
+- name: 'gcr.io/buildpacks/pack:v0.28.0'
   entrypoint: 'pack'
   args:
     [
