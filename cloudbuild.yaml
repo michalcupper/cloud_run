@@ -4,7 +4,7 @@ steps:
   - gcloud
   - functions
   - deploy
-  - enhanced_description
+  - enhanced-description
   - --region=europe-west1
   - --source=.
   - --runtime=python313
