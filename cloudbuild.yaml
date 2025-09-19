@@ -30,9 +30,6 @@ steps:
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
-substitutions:
-  SHORT_SHA: '${SHORT_SHA}'
-
 serviceAccount: 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
 
 logsBucket: 'gs://enriched_description'
