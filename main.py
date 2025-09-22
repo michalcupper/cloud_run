@@ -6,7 +6,7 @@ from google import genai
 from utils.helper import generate_metadata_for_batch
 
 MODEL = "gemini-2.5-pro"
-api_key = os.environ.get("api_key")
+api_key = os.environ.get("cloud-functions-gemini-api-key")
 gclient = genai.Client(api_key=api_key)
 
 @functions_framework.http
