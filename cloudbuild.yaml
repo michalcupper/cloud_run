@@ -23,7 +23,7 @@ steps:
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
-      '--set-secrets', 'api_key=api_key:latest',
+      '--set-secrets', 'api_key=cloud-functions-gemini-api-key:latest',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
       '--memory', '512Mi'
     ]
