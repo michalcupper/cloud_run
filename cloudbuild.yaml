@@ -25,14 +25,11 @@ steps:
       '--no-allow-unauthenticated',
       '--set-secrets', 'api_key=api_key:latest',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
-      '--memory', '512Mi',
-      '--max-instances', '2'
+      '--memory', '512Mi'
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
 serviceAccount: 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
-
-logsBucket: 'gs://enriched_description'
-
+logsBucket: 'gs://gemini-enhanced-description' # change underscore
 options:
   logging: GCS_ONLY
