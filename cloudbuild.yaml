@@ -1,22 +1,38 @@
 steps:
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+- name: 'gcr.io/k8s-skaffold/pack'
+  entrypoint: 'pack'
   args:
-  - gcloud
-  - functions
-  - deploy
-  - enhanced-description
-  - --region=europe-west1
-  - --source=.
-  - --runtime=python313
-  - --gen2
-  - --trigger-http
-  - --memory=512Mi
-  - --max-instances=1
-  - --service-account=cloud-run@dev-michal-cupper.iam.gserviceaccount.com
-  id: 'Deploy Cloud Function from source'
+    [
+      'build',
+      'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced_description-function:${SHORT_SHA}',
+      '--builder', 'europe-west1-docker.pkg.dev/serverless-runtimes/google-22-full/builder/python:python_20250914_RC00',
+      '--env', 'GOOGLE_RUNTIME_VERSION=3.13.7',
+      '--env', 'GOOGLE_FUNCTION_TARGET=enrich_description',
+      '--env', 'FUNCTION_SIGNATURE_TYPE=http',
+      '--path', './workspace',
+      '--publish' #
+    ]
+  id: 'Build and Push Image with Buildpacks'
 
-timeout: 1200s
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args:
+    [
+      'run', 'deploy', 'enhanced-description',
+      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
+      '--region', 'europe-west1',
+      '--platform', 'managed',
+      '--no-allow-unauthenticated',
+      '--set-env-vars', 'FUNCTION_TARGET=enrich_description,FUNCTION_SIGNATURE_TYPE=http',
+      '--set-env-vars', 'GOOGLE_RUNTIME_VERSION=3.13.7',
+      '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
+      '--memory', '256Mi'
+    ]
+  id: 'Deploy Cloud Function on Cloud Run'
+
 serviceAccount: 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
+
 logsBucket: 'gs://enriched_description'
+
 options:
   logging: GCS_ONLY
