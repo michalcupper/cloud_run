@@ -9,7 +9,7 @@ steps:
       '--env', 'GOOGLE_RUNTIME_VERSION=3.13.7',
       '--env', 'GOOGLE_FUNCTION_TARGET=enrich_description',
       '--env', 'FUNCTION_SIGNATURE_TYPE=http',
-      '--path', './workspace',
+      '--path', '.',
       '--publish' #
     ]
   id: 'Build and Push Image with Buildpacks'
