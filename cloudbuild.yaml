@@ -23,13 +23,13 @@ steps:
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
-      '--set-secrets', 'api_key=cloud-functions-gemini-api-key:latest',
+      '--set-secrets', 'api_key=api_key:latest',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
       '--memory', '512Mi'
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
 serviceAccount: 'projects/dev-michal-cupper/serviceAccounts/cloud-run@dev-michal-cupper.iam.gserviceaccount.com'
-logsBucket: 'gs://gemini-enhanced-description' # change underscore
+logsBucket: 'gs://gemini-enhanced-description'
 options:
   logging: GCS_ONLY
