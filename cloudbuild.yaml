@@ -23,6 +23,7 @@ steps:
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
+      '--set-secrets', 'api_key=api_key:latest',
       '--set-env-vars', 'FUNCTION_TARGET=enrich_description,FUNCTION_SIGNATURE_TYPE=http',
       '--set-env-vars', 'GOOGLE_RUNTIME_VERSION=3.13.7',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',

@@ -12,10 +12,11 @@ from google.genai import types
 MODEL = "gemini-2.5-pro"
 DEBUG = True
 
-ai_api_key = "AIzaSyAn8U2WtiC3lyS3d4ev6vwtG3irShaGzI8" #os.environ.get("ai_api_key")
+#ai_api_key = "AIzaSyAn8U2WtiC3lyS3d4ev6vwtG3irShaGzI8" os.environ.get("ai_api_key")
+api_key = os.environ.get("api_key")
 
 # Initialize client
-gclient = genai.Client(api_key=ai_api_key)
+gclient = genai.Client(api_key=api_key)
 
 system_prompt = """
 SYSTEM INSTRUCTION – STRICT ENGLISH ONLY
