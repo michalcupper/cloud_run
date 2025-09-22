@@ -4,7 +4,7 @@ steps:
   args:
     [
       'build',
-      'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
+      'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/gemini-enhanced-description:${SHORT_SHA}',
       '--builder', 'europe-west1-docker.pkg.dev/serverless-runtimes/google-22-full/builder/python:python_20250914_RC00',
       '--env', 'GOOGLE_RUNTIME_VERSION=3.13.7',
       '--env', 'GOOGLE_FUNCTION_TARGET=enrich_description',
@@ -18,14 +18,15 @@ steps:
   entrypoint: gcloud
   args:
     [
-      'run', 'deploy', 'enhanced-description',
-      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/enhanced-description-function:${SHORT_SHA}',
+      'run', 'deploy', 'gemini-enhanced-description',
+      '--image', 'europe-west1-docker.pkg.dev/dev-michal-cupper/cloud-run-source-deploy/gemini-enhanced-description:${SHORT_SHA}',
       '--region', 'europe-west1',
       '--platform', 'managed',
       '--no-allow-unauthenticated',
       '--set-secrets', 'api_key=api_key:latest',
       '--service-account', 'cloud-run@dev-michal-cupper.iam.gserviceaccount.com',
-      '--memory', '512Mi'
+      '--memory', '512Mi',
+      '--max-instances', '2'
     ]
   id: 'Deploy Cloud Function on Cloud Run'
 
